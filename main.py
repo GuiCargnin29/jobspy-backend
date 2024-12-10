@@ -1,10 +1,30 @@
 from fastapi import FastAPI, HTTPException, Query
-from jobspy import scrape_jobs  # Assuming this is a valid library for scraping jobs
+from fastapi.middleware.cors import CORSMiddleware
+from jobspy import scrape_jobs
 import pandas as pd
 from supabase import create_client, Client
+from typing import Optional
 
 # Initialize FastAPI app
 app = FastAPI()
+
+# Configure CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",  # Vite dev server
+        "http://localhost:4173",  # Vite preview
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:4173",
+        "https://weconnect-jobs.netlify.app",  # Production domain
+        "https://weconnect-jobs.stackblitz.io"  # StackBlitz domain
+    ],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],  # Explicitly list allowed methods
+    allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=3600  # Cache preflight requests for 1 hour
+)
 
 # Supabase credentials
 SUPABASE_URL = "https://sxltlggzfhouiwlwtlnx.supabase.co"
