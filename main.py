@@ -11,14 +11,7 @@ app = FastAPI()
 # Configure CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",  # Vite dev server
-        "http://localhost:4173",  # Vite preview
-        "http://127.0.0.1:5173",
-        "http://127.0.0.1:4173",
-        "https://weconnect-jobs.netlify.app",  # Production domain
-        "https://weconnect-jobs.stackblitz.io"  # StackBlitz domain
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "OPTIONS"],  # Explicitly list allowed methods
     allow_headers=["*"],
