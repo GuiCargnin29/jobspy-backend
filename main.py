@@ -20,8 +20,8 @@ app.add_middleware(
 )
 
 # Supabase credentials
-SUPABASE_URL = "https://sxltlggzfhouiwlwtlnx.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN4bHRsZ2d6ZmhvdWl3bHd0bG54Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczMTM4OTcwNSwiZXhwIjoyMDQ2OTY1NzA1fQ.0DUeqlawLgm9UQ6KErzfFplGe_R_nvTtn3Cd3bsRAhM"
+SUPABASE_URL = "https://scqembxsgoxfvenczwjy.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNjcWVtYnhzZ294ZnZlbmN6d2p5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczNDYzODM2NywiZXhwIjoyMDUwMjE0MzY3fQ.pGSHychq1XogdFlv-WgkQGt1AH8FcHg5nNUnvyUhvk8"
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
