@@ -75,16 +75,7 @@ async def search_jobs(
         # Convert to list of dictionaries
         jobs_list = jobs_filtered.to_dict(orient="records")
 
-        # Save all job postings to Supabase (batch insertion for better performance)
-        response = supabase.table("jobs_scraped").insert(jobs_list).execute()
-
-        # Log response for debugging
-        print("Supabase Response:", response)
-
-        # Validate insertion response
-        if not hasattr(response, "data") or response.data is None:
-            raise Exception(f"Failed to insert job postings. Response: {response}")
-
+        # Return the retrieved jobs
         return {"jobs": jobs_list, "total_results": len(jobs_filtered)}
 
     except Exception as e:
