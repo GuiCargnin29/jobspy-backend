@@ -1,9 +1,9 @@
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
 from jobspy import scrape_jobs
 import pandas as pd
-from typing import Generator
+from supabase import create_client, Client
+from typing import Optional
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -18,6 +18,12 @@ app.add_middleware(
     expose_headers=["*"],
     max_age=3600  # Cache preflight requests for 1 hour
 )
+
+# Supabase credentials
+SUPABASE_URL = "https://scqembxsgoxfvenczwjy.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNjcWVtYnhzZ294ZnZlbmN6d2p5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczNDYzODM2NywiZXhwIjoyMDUwMjE0MzY3fQ.pGSHychq1XogdFlv-WgkQGt1AH8FcHg5nNUnvyUhvk8"
+
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Define fields to retrieve
 FIELDS_TO_RETRIEVE = [
@@ -34,14 +40,13 @@ async def search_jobs(
     try:
         # Define the number of results to fetch
         results_wanted = 600
-        batch_size = 20  # Number of jobs per batch
 
         # Configure JobSpy parameters
         params = {
             "site_name": ["indeed"],
             "search_term": search_term,
             "location": location,
-            "job_type": "internship",
+            "job_type": "internship", 
             "results_wanted": results_wanted,
             "country_indeed": location,
         }
@@ -67,15 +72,11 @@ async def search_jobs(
         # Filter fields to retrieve
         jobs_filtered = jobs[FIELDS_TO_RETRIEVE]
 
-        # Generator function to stream jobs in batches
-        def job_stream() -> Generator[str, None, None]:
-            total_jobs = len(jobs_filtered)
-            for i in range(0, total_jobs, batch_size):
-                batch = jobs_filtered[i:i + batch_size]
-                yield batch.to_json(orient="records")  # Yield batch as JSON
+        # Convert to list of dictionaries
+        jobs_list = jobs_filtered.to_dict(orient="records")
 
-        # Stream response
-        return StreamingResponse(job_stream(), media_type="application/json")
+        # Return the retrieved jobs
+        return {"jobs": jobs_list, "total_results": len(jobs_filtered)}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
